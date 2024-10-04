@@ -1,6 +1,6 @@
-# My Python Project
+# Device Auth Flow
 
-This is a Python project that retrieves a string from the command line and prints it.
+Retrieve a user token through the device authentication flow.
 
 ## Usage
 
