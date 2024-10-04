@@ -15,16 +15,8 @@ To run the project, follow these steps:
    ```
    python src/main.py
    ```
-4. Enter a string when prompted and press Enter.
-5. The entered string will be printed to the console.
 
 ## Dependencies
-
-The project requires the following dependencies, which are listed in the `requirements.txt` file:
-
-- dependency1
-- dependency2
-- ...
 
 You can install these dependencies using the following command:
 ```
