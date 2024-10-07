@@ -1,11 +1,12 @@
 # Entry point of the application
+import json
 import os
 import time
 import requests
 
 # Retrieve the GitHub App ID and private key from the environment
 client_id = os.getenv("GITHUB_CLIENT_ID")
-private_key_file = os.getenv("GITHUB_APP_PRIVATE_KEY_FILE")
+copilot_integration_id = os.getenv("COPILOT_INTEGRATION_ID")
 
 # Send a POST request to https://github.com/login/device/code along with a client_id query parameter
 # The response will contain a user_code, device_code, and verification_uri
@@ -83,3 +84,38 @@ while True:
         
 
 print(f"Access token: {access_token}")
+
+messages_for_copilot = [{ "role": "user", "content": "List my issues" }]
+url = "https://api.githubcopilot.com/agents/chat"
+headers = {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "Copilot-Integration-Id": copilot_integration_id,
+    "Authorization": f"Bearer {access_token}",
+}
+
+# type ChatRequest struct {
+#     ThreadID         string                                `json:"copilot_thread_id"`
+#     Messages         []*agentprompt.Message                `json:"messages"`
+#     Stop             []string                              `json:"stop"`
+#     TopP             float32                               `json:"top_p"`
+#     Temperature      float32                               `json:"temperature"`
+#     MaxTokens        int32                                 `json:"max_tokens"`
+#     PresencePenalty  float32                               `json:"presence_penalty"`
+#     FrequencyPenalty float32                               `json:"frequency_penalty"`
+#     ResponseFormat   *schema.ChatCompletionsResponseFormat `json:"response_format"`
+
+#     Skills []string `json:"copilot_skills"`
+#     Agent  string   `json:"agent"`
+#     Model  string   `json:"model"`
+# }
+body = {
+    "messages": messages_for_copilot,
+    "copilot_skills": ["get-github-data"],
+    "model": "gpt-4o-mini",
+}
+
+response = requests.post(url, headers=headers, data=json.dumps(body))
+response.raise_for_status()
+
+print(response.json())
